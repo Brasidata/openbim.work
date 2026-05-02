@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://openbim.work/</loc>
+        <lastmod>2026-05-02</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://openbim.work/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://openbim.work/es/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://openbim.work/pt/"/>
+    </url>
+    <url>
+        <loc>https://openbim.work/pt/</loc>
+        <lastmod>2026-05-02</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://openbim.work/pt/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://openbim.work/"/>
+        <xhtml:link rel="alternate" hreflang="es" href="https://openbim.work/es/"/>
+    </url>
+    <url>
+        <loc>https://openbim.work/es/</loc>
+        <lastmod>2026-05-02</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="es" href="https://openbim.work/es/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://openbim.work/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://openbim.work/pt/"/>
+    </url>
+</urlset>
