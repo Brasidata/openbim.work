@@ -1,0 +1,65 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  NO_MKDOCS_2_WARNING: "1"
+
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            docs/requirements.txt
+            **/pyproject.toml
+
+      - name: Resolve docs paths
+        shell: bash
+        run: |
+          if [ -f "docs/requirements.txt" ]; then
+            echo "REQUIREMENTS_FILE=docs/requirements.txt" >> "$GITHUB_ENV"
+          else
+            echo "REQUIREMENTS_FILE=requirements.txt" >> "$GITHUB_ENV"
+          fi
+
+          if [ -f "docs/mkdocs.yml" ]; then
+            echo "MKDOCS_CONFIG=docs/mkdocs.yml" >> "$GITHUB_ENV"
+          else
+            echo "MKDOCS_CONFIG=mkdocs.yml" >> "$GITHUB_ENV"
+          fi
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r "${REQUIREMENTS_FILE}"
+          
+      - name: Build Documentation
+        run: |
+          mkdocs build --clean --strict --config-file "${MKDOCS_CONFIG}"
+          
+      - name: Deploy to GitHub Pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdocs gh-deploy --force --config-file "${MKDOCS_CONFIG}"
