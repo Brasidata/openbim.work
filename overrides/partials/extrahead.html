@@ -2,15 +2,21 @@
 
 <script>
   (function () {
-    function isValidScheme(scheme) {
-      return scheme === "default" || scheme === "slate";
+    function isValidTheme(theme) {
+      return theme === "light" || theme === "dark" || theme === "default" || theme === "slate";
     }
 
-    function getSchemeFromUrl() {
+    function toMdScheme(theme) {
+      if (theme === "dark" || theme === "slate") return "slate";
+      if (theme === "light" || theme === "default") return "default";
+      return null;
+    }
+
+    function getThemeFromUrl() {
       try {
         var params = new URLSearchParams(window.location.search);
-        var scheme = params.get("scheme");
-        return isValidScheme(scheme) ? scheme : null;
+        var theme = params.get("scheme");
+        return isValidTheme(theme) ? theme : null;
       } catch (e) {
         return null;
       }
@@ -21,11 +27,11 @@
       try {
         stored = localStorage.getItem("ob-theme-preference");
       } catch (e) {}
-      return isValidScheme(stored) ? stored : null;
+      return isValidTheme(stored) ? stored : null;
     }
 
     function applyScheme(scheme) {
-      if (!isValidScheme(scheme)) return;
+      if (scheme !== "default" && scheme !== "slate") return;
       document.documentElement.setAttribute("data-md-color-scheme", scheme);
       if (document.body) document.body.setAttribute("data-md-color-scheme", scheme);
     }
@@ -37,34 +43,31 @@
       });
     }
 
-    var urlScheme = getSchemeFromUrl();
-    if (urlScheme) {
+    var urlTheme = getThemeFromUrl();
+    if (urlTheme) {
+      var mdScheme = toMdScheme(urlTheme);
       try {
-        localStorage.setItem("ob-theme-preference", urlScheme);
+        localStorage.setItem("ob-theme-preference", mdScheme);
       } catch (e) {}
-      applyScheme(urlScheme);
+      if (mdScheme) applyScheme(mdScheme);
     } else {
-      var storedScheme = getStoredScheme();
-      if (storedScheme) applyScheme(storedScheme);
+      var stored = getStoredScheme();
+      var storedMd = stored ? toMdScheme(stored) : null;
+      if (storedMd) applyScheme(storedMd);
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-      var current =
-        getSchemeFromUrl() ||
-        document.documentElement.getAttribute("data-md-color-scheme") ||
-        getStoredScheme() ||
-        "default";
+      var currentTheme = getThemeFromUrl() || getStoredScheme() || "light";
+      var current = toMdScheme(currentTheme) || "default";
 
-      if (isValidScheme(current)) {
-        applyScheme(current);
-        syncPaletteInputs(current);
-      }
+      applyScheme(current);
+      syncPaletteInputs(current);
 
       var inputs = document.querySelectorAll('input[name="__palette"]');
       inputs.forEach(function (input) {
         input.addEventListener("change", function (e) {
           var newScheme = e.target.getAttribute("data-md-color-scheme");
-          if (!isValidScheme(newScheme)) return;
+          if (newScheme !== "default" && newScheme !== "slate") return;
           try {
             localStorage.setItem("ob-theme-preference", newScheme);
           } catch (err) {}
