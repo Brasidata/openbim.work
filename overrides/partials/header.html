@@ -82,16 +82,31 @@
               baseUrl = "https://engine.openbim.work/"; // Substitua pelo URL real de prod do Engine
             }
             
-            function toTheme(value) {
-              if (value === "dark" || value === "slate") return "dark";
-              return "light";
+            function readMaterialScheme() {
+              var stored = null;
+              try {
+                stored = localStorage.getItem("ob-theme-preference");
+              } catch (e) {}
+              if (stored === "default" || stored === "slate") return stored;
+
+              var attr =
+                document.documentElement.getAttribute("data-md-color-scheme") ||
+                (document.body && document.body.getAttribute("data-md-color-scheme"));
+              if (attr === "default" || attr === "slate") return attr;
+
+              try {
+                var raw = localStorage.getItem("__palette");
+                if (!raw) return null;
+                var parsed = JSON.parse(raw);
+                var scheme = parsed && parsed.color && parsed.color.scheme;
+                if (scheme === "default" || scheme === "slate") return scheme;
+              } catch (err) {}
+
+              return null;
             }
 
-            var schemeOrTheme =
-              localStorage.getItem("ob-theme-preference") ||
-              document.documentElement.getAttribute("data-md-color-scheme") ||
-              "light";
-            var theme = toTheme(schemeOrTheme);
+            var mdScheme = readMaterialScheme() || "default";
+            var theme = mdScheme === "slate" ? "dark" : "light";
             cta.href = baseUrl + "?lang=" + encodeURIComponent(lang) + "&scheme=" + encodeURIComponent(theme);
 
             // O MkDocs Material intercepta cliques em links externos via event listeners nativos.

@@ -36,6 +36,21 @@
       if (document.body) document.body.setAttribute("data-md-color-scheme", scheme);
     }
 
+    function persistMaterialScheme(scheme) {
+      if (scheme !== "default" && scheme !== "slate") return;
+      try {
+        localStorage.setItem("ob-theme-preference", scheme);
+      } catch (e) {}
+      try {
+        var raw = localStorage.getItem("__palette");
+        var parsed = raw ? JSON.parse(raw) : {};
+        if (!parsed || typeof parsed !== "object") parsed = {};
+        if (!parsed.color || typeof parsed.color !== "object") parsed.color = {};
+        parsed.color.scheme = scheme;
+        localStorage.setItem("__palette", JSON.stringify(parsed));
+      } catch (err) {}
+    }
+
     function syncPaletteInputs(scheme) {
       var inputs = document.querySelectorAll('input[name="__palette"]');
       inputs.forEach(function (input) {
@@ -46,9 +61,7 @@
     var urlTheme = getThemeFromUrl();
     if (urlTheme) {
       var mdScheme = toMdScheme(urlTheme);
-      try {
-        localStorage.setItem("ob-theme-preference", mdScheme);
-      } catch (e) {}
+      persistMaterialScheme(mdScheme);
       if (mdScheme) applyScheme(mdScheme);
     } else {
       var stored = getStoredScheme();
@@ -68,9 +81,7 @@
         input.addEventListener("change", function (e) {
           var newScheme = e.target.getAttribute("data-md-color-scheme");
           if (newScheme !== "default" && newScheme !== "slate") return;
-          try {
-            localStorage.setItem("ob-theme-preference", newScheme);
-          } catch (err) {}
+          persistMaterialScheme(newScheme);
           applyScheme(newScheme);
         });
       });
