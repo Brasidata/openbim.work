@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="/assets/images/logo-light.png">
+      <link rel="icon" href="/assets/images/favicon-dark.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
@@ -151,8 +151,43 @@ body[data-md-color-scheme="slate"] .ob-logo {
 
     <div class="bd-header-actions" aria-label="Header actions">
       <div class="bd-header-ctas" aria-label="Header CTAs">
-        <a class="bd-header-cta bd-header-cta--primary" href="#" target="_blank" rel="noopener">Ver empleos</a>
+        <a id="btn-view-jobs" class="bd-header-cta bd-header-cta--primary" href="#">Ver empleos</a>
       </div>
+
+      <script>
+        // Corrige dinamicamente o link do Engine com base no ambiente (dev/prod)
+        document.addEventListener("DOMContentLoaded", function() {
+          var cta = document.getElementById("btn-view-jobs");
+          if (cta) {
+            // Garante agressivamente que não vai abrir nova aba
+            cta.removeAttribute("target");
+            cta.removeAttribute("rel");
+            cta.target = "_self";
+            
+            // Obter idioma da tag html do MkDocs (ex: "pt", "en", "es")
+            var lang = document.documentElement.lang || "en";
+            
+            // Define o link correto com o parâmetro de idioma
+            var baseUrl = "";
+            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+              baseUrl = "http://localhost:8080/";
+            } else {
+              baseUrl = "https://engine.openbim.work/"; // Substitua pelo URL real de prod do Engine
+            }
+            
+            cta.href = baseUrl + "?lang=" + lang;
+
+            // O MkDocs Material intercepta cliques em links externos via event listeners nativos.
+            // Para forçar a navegação na mesma aba, precisamos parar a propagação do evento dele
+            // e forçar a mudança do window.location manualmente.
+            cta.addEventListener("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = this.href;
+            }, true);
+          }
+        });
+      </script>
 
       
         

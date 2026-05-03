@@ -26,7 +26,7 @@
         
       
       
-      <link rel="icon" href="../assets/images/logo-light.png">
+      <link rel="icon" href="../assets/images/favicon-dark.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
@@ -153,8 +153,43 @@ body[data-md-color-scheme="slate"] .ob-logo {
 
     <div class="bd-header-actions" aria-label="Header actions">
       <div class="bd-header-ctas" aria-label="Header CTAs">
-        <a class="bd-header-cta bd-header-cta--primary" href="#" target="_blank" rel="noopener">Ver vagas</a>
+        <a id="btn-view-jobs" class="bd-header-cta bd-header-cta--primary" href="#">Ver vagas</a>
       </div>
+
+      <script>
+        // Corrige dinamicamente o link do Engine com base no ambiente (dev/prod)
+        document.addEventListener("DOMContentLoaded", function() {
+          var cta = document.getElementById("btn-view-jobs");
+          if (cta) {
+            // Garante agressivamente que não vai abrir nova aba
+            cta.removeAttribute("target");
+            cta.removeAttribute("rel");
+            cta.target = "_self";
+            
+            // Obter idioma da tag html do MkDocs (ex: "pt", "en", "es")
+            var lang = document.documentElement.lang || "en";
+            
+            // Define o link correto com o parâmetro de idioma
+            var baseUrl = "";
+            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+              baseUrl = "http://localhost:8080/";
+            } else {
+              baseUrl = "https://engine.openbim.work/"; // Substitua pelo URL real de prod do Engine
+            }
+            
+            cta.href = baseUrl + "?lang=" + lang;
+
+            // O MkDocs Material intercepta cliques em links externos via event listeners nativos.
+            // Para forçar a navegação na mesma aba, precisamos parar a propagação do evento dele
+            // e forçar a mudança do window.location manualmente.
+            cta.addEventListener("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = this.href;
+            }, true);
+          }
+        });
+      </script>
 
       
         
@@ -425,23 +460,36 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
 </style>
 
 <div class="job-analyzer-container">
-  <h1>Analisador de Vagas OpenBIM</h1>
-  <p class="subtitle">Cole o link da vaga ou o texto descritivo para receber uma análise completa do perfil desejado.</p>
+  <h1>Analisador de Vagas Open<span class="bd-accent">BIM</span></h1>
+  <p class="subtitle">Cole o link da vaga ou o texto da descrição para obter uma análise completa do perfil requisitado.</p>
 
-  <form class="job-form" onsubmit="event.preventDefault(); alert('Em desenvolvimento...');">
+  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/analyze?lang=pt">
     <div class="form-group">
-      <label for="job-input">Link da vaga ou texto correspondente:</label>
-      <textarea id="job-input" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... ou cole o texto aqui"></textarea>
+      <label for="job-input">Link da vaga ou texto da descrição:</label>
+      <textarea id="job-input" name="job_text" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... ou cole o texto aqui"></textarea>
     </div>
 
     <label class="toggle-group">
-      <input type="checkbox" id="auth-publish" checked>
+      <input type="checkbox" id="auth-publish" name="auth_publish" value="true" checked>
       <span>Autorizo publicar essa vaga na nossa base de dados</span>
     </label>
 
     <button type="submit" class="btn-send">Enviar para Análise</button>
   </form>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById("job-form");
+    if (form) {
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        form.action = "http://localhost:8080/analyze?lang=pt";
+      } else {
+        form.action = "https://engine.openbim.work/analyze?lang=pt";
+      }
+    }
+  });
+</script>
 
 
 
