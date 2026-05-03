@@ -180,7 +180,11 @@ body[data-md-color-scheme="slate"] .ob-logo {
               baseUrl = "https://engine.openbim.work/"; // Substitua pelo URL real de prod do Engine
             }
             
-            cta.href = baseUrl + "?lang=" + lang;
+            var scheme =
+              localStorage.getItem("ob-theme-preference") ||
+              document.documentElement.getAttribute("data-md-color-scheme") ||
+              "default";
+            cta.href = baseUrl + "?lang=" + encodeURIComponent(lang) + "&scheme=" + encodeURIComponent(scheme);
 
             // O MkDocs Material intercepta cliques em links externos via event listeners nativos.
             // Para forçar a navegação na mesma aba, precisamos parar a propagação do evento dele
@@ -477,7 +481,7 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
 
     <label class="toggle-group">
       <input type="checkbox" id="auth-publish" name="auth_publish" value="true" checked>
-      <span>Autorizo publicar este empleo en nuestra base de datos</span>
+      <span>Publicar este empleo en nuestra base de datos</span>
     </label>
 
     <button type="submit" class="btn-send">Enviar para Análisis</button>
