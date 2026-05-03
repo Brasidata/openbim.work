@@ -138,6 +138,11 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
       } else {
         form.action = "https://engine.openbim.work/analyze?lang=en";
       }
+
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        alert("This feature is not available yet. Please try again soon.");
+      });
     }
   });
 </script>
