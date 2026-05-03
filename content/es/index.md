@@ -111,20 +111,33 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
 </style>
 
 <div class="job-analyzer-container">
-  <h1>Analizador de Empleos OpenBIM</h1>
-  <p class="subtitle">Pega el enlace del empleo o el texto descriptivo para recibir un análisis completo del perfil requerido.</p>
+  <h1>Analizador de Empleos Open<span class="bd-accent">BIM</span></h1>
+  <p class="subtitle">Pegue el enlace del empleo o el texto de la descripción para obtener un análisis completo del perfil solicitado.</p>
 
-  <form class="job-form" onsubmit="event.preventDefault(); alert('En desarrollo...');">
+  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/analyze?lang=es">
     <div class="form-group">
-      <label for="job-input">Enlace del empleo o texto correspondiente:</label>
-      <textarea id="job-input" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... o pega el texto aquí"></textarea>
+      <label for="job-input">Enlace del empleo o texto de la descripción:</label>
+      <textarea id="job-input" name="job_text" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... o pegue el texto aquí"></textarea>
     </div>
 
     <label class="toggle-group">
-      <input type="checkbox" id="auth-publish" checked>
+      <input type="checkbox" id="auth-publish" name="auth_publish" value="true" checked>
       <span>Autorizo publicar este empleo en nuestra base de datos</span>
     </label>
 
     <button type="submit" class="btn-send">Enviar para Análisis</button>
   </form>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById("job-form");
+    if (form) {
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        form.action = "http://localhost:8080/analyze?lang=es";
+      } else {
+        form.action = "https://engine.openbim.work/analyze?lang=es";
+      }
+    }
+  });
+</script>

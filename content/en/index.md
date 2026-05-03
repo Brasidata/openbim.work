@@ -111,20 +111,33 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
 </style>
 
 <div class="job-analyzer-container">
-  <h1>OpenBIM Job Analyzer</h1>
+  <h1>Open<span class="bd-accent">BIM</span> Job Analyzer</h1>
   <p class="subtitle">Paste the job link or description text to get a full analysis of the required profile.</p>
 
-  <form class="job-form" onsubmit="event.preventDefault(); alert('Under development...');">
+  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/analyze?lang=en">
     <div class="form-group">
       <label for="job-input">Job link or text description:</label>
-      <textarea id="job-input" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... or paste text here"></textarea>
+      <textarea id="job-input" name="job_text" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... or paste text here"></textarea>
     </div>
 
     <label class="toggle-group">
-      <input type="checkbox" id="auth-publish" checked>
+      <input type="checkbox" id="auth-publish" name="auth_publish" value="true" checked>
       <span>I authorize publishing this job in our database</span>
     </label>
 
     <button type="submit" class="btn-send">Send for Analysis</button>
   </form>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var form = document.getElementById("job-form");
+    if (form) {
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        form.action = "http://localhost:8080/analyze?lang=en";
+      } else {
+        form.action = "https://engine.openbim.work/analyze?lang=en";
+      }
+    }
+  });
+</script>
