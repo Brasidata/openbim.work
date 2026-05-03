@@ -122,7 +122,7 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
 
     <label class="toggle-group">
       <input type="checkbox" id="auth-publish" name="auth_publish" value="true" checked>
-      <span>Autorizo publicar essa vaga na nossa base de dados</span>
+      <span>Publicar essa vaga na nossa base de dados</span>
     </label>
 
     <button type="submit" class="btn-send">Enviar para Análise</button>

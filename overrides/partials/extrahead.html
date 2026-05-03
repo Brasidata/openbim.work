@@ -1,5 +1,80 @@
 {{ super() }}
 
+<script>
+  (function () {
+    function isValidScheme(scheme) {
+      return scheme === "default" || scheme === "slate";
+    }
+
+    function getSchemeFromUrl() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var scheme = params.get("scheme");
+        return isValidScheme(scheme) ? scheme : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getStoredScheme() {
+      var stored = null;
+      try {
+        stored = localStorage.getItem("ob-theme-preference");
+      } catch (e) {}
+      return isValidScheme(stored) ? stored : null;
+    }
+
+    function applyScheme(scheme) {
+      if (!isValidScheme(scheme)) return;
+      document.documentElement.setAttribute("data-md-color-scheme", scheme);
+      if (document.body) document.body.setAttribute("data-md-color-scheme", scheme);
+    }
+
+    function syncPaletteInputs(scheme) {
+      var inputs = document.querySelectorAll('input[name="__palette"]');
+      inputs.forEach(function (input) {
+        input.checked = input.getAttribute("data-md-color-scheme") === scheme;
+      });
+    }
+
+    var urlScheme = getSchemeFromUrl();
+    if (urlScheme) {
+      try {
+        localStorage.setItem("ob-theme-preference", urlScheme);
+      } catch (e) {}
+      applyScheme(urlScheme);
+    } else {
+      var storedScheme = getStoredScheme();
+      if (storedScheme) applyScheme(storedScheme);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var current =
+        getSchemeFromUrl() ||
+        document.documentElement.getAttribute("data-md-color-scheme") ||
+        getStoredScheme() ||
+        "default";
+
+      if (isValidScheme(current)) {
+        applyScheme(current);
+        syncPaletteInputs(current);
+      }
+
+      var inputs = document.querySelectorAll('input[name="__palette"]');
+      inputs.forEach(function (input) {
+        input.addEventListener("change", function (e) {
+          var newScheme = e.target.getAttribute("data-md-color-scheme");
+          if (!isValidScheme(newScheme)) return;
+          try {
+            localStorage.setItem("ob-theme-preference", newScheme);
+          } catch (err) {}
+          applyScheme(newScheme);
+        });
+      });
+    });
+  })();
+</script>
+
 <!-- SEO Meta Tags -->
 <meta name="description" content="Analise vagas e perfis profissionais na área de OpenBIM. OpenBIM.work é a ferramenta definitiva para validar descrições de vagas no setor da construção civil.">
 <meta name="keywords" content="OpenBIM, BIM, Analisador de Vagas, Vagas BIM, Construção Civil, Engenharia, Arquitetura">
