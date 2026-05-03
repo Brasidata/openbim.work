@@ -697,6 +697,7 @@ body[data-md-color-scheme="slate"] .md-header {
   background: #00bcd4;
   border-color: transparent;
   color: #ffffff;
+  font-weight: 800;
 }
 
 html[data-md-color-scheme="slate"] .bd-header-cta {
