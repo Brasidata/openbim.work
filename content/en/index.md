@@ -114,7 +114,7 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
   <h1>Open<span class="bd-accent">BIM</span> Job Analyzer</h1>
   <p class="subtitle">Paste the job link or description text to get a full analysis of the required profile.</p>
 
-  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/analyze?lang=en">
+  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/store?lang=en">
     <div class="form-group">
       <label for="job-input">Job link or text description:</label>
       <textarea id="job-input" name="job_text" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... or paste text here"></textarea>
@@ -134,9 +134,9 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
     var form = document.getElementById("job-form");
     if (form) {
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        form.action = "http://localhost:8080/analyze?lang=en";
+        form.action = "http://localhost:8080/store?lang=en";
       } else {
-        form.action = "https://engine.openbim.work/analyze?lang=en";
+        form.action = "https://engine.openbim.work/store?lang=en";
       }
 
       form.addEventListener("submit", function(e) {

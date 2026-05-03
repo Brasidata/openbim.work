@@ -114,7 +114,7 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
   <h1>Analisador de Vagas Open<span class="bd-accent">BIM</span></h1>
   <p class="subtitle">Cole o link da vaga ou o texto da descrição para obter uma análise completa do perfil requisitado.</p>
 
-  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/analyze?lang=pt">
+  <form id="job-form" class="job-form" method="POST" action="http://localhost:8080/store?lang=pt">
     <div class="form-group">
       <label for="job-input">Link da vaga ou texto da descrição:</label>
       <textarea id="job-input" name="job_text" class="form-control" rows="6" placeholder="https://linkedin.com/jobs/... ou cole o texto aqui"></textarea>
@@ -134,9 +134,9 @@ html[data-md-color-scheme="slate"] .job-analyzer-container {
     var form = document.getElementById("job-form");
     if (form) {
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        form.action = "http://localhost:8080/analyze?lang=pt";
+        form.action = "http://localhost:8080/store?lang=pt";
       } else {
-        form.action = "https://engine.openbim.work/analyze?lang=pt";
+        form.action = "https://engine.openbim.work/store?lang=pt";
       }
 
       form.addEventListener("submit", function(e) {
